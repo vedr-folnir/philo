@@ -6,7 +6,7 @@
 /*   By: hlasota <hlasota@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 10:23:09 by hlasota           #+#    #+#             */
-/*   Updated: 2023/11/02 10:19:01 by hlasota          ###   ########.fr       */
+/*   Updated: 2023/11/08 12:21:52 by hlasota          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -46,17 +46,26 @@ void	*philosophers(void *arg)
 
 int	error(t_val *val)
 {
+	int i;
+
 	val->l_philo = malloc(sizeof(t_philo) * val->nb_philo + 1);
 	if (!val->l_philo)
 	{
 		printf("error malloc\n");
 		return (-2);
 	}
-	val->l_fork = malloc(sizeof(t_philo) * val->nb_philo + 1);
+	val->l_fork = malloc(sizeof(pthread_mutex_t) * val->nb_philo + 1);
 	if (!val->l_fork)
 	{
 		printf("error malloc\n");
 		return (-2);
+	}
+	i = 0;
+	while (i < val->nb_philo)
+	{
+		if (pthread_mutex_init(&val->l_fork[i], NULL) != 0)
+			return (-3);
+		i++;
 	}
 	return (0);
 }
@@ -71,34 +80,6 @@ void	ft_try_print(char *text, t_philo *philo, long int time, int id)
 	return;
 }
 
-/*int	ft_eat(t_philo *philo)
-{
-	if (pthread_mutex_lock(&philo->vargs->l_fork[philo->id - 1]) == 0
-		&& pthread_mutex_lock(&philo->vargs->l_fork[philo->id
-		% (philo->vargs->nb_philo)]) == 0)
-	{
-		ft_try_print("has taken a fork", philo, philo->vargs->start, philo->id);
-		ft_try_print("has taken a fork", philo, philo->vargs->start, philo->id);
-		ft_try_print("is eating", philo, philo->vargs->start, philo->id);
-		ft_usleep(philo->vargs->time_eat);
-		philo->meals_eat++;
-		philo->last_eat = actual_time();
-		pthread_mutex_unlock(&philo->vargs->l_fork[philo->id - 1]);
-		pthread_mutex_unlock(&philo->vargs->l_fork[philo->id
-			% philo->vargs->nb_philo]);
-		if (philo->vargs->death == -1)
-			return (-1);
-	}
-	else
-	{
-		pthread_mutex_unlock(&philo->vargs->l_fork[philo->id - 1]);
-		pthread_mutex_unlock(&philo->vargs->l_fork[philo->id
-			% philo->vargs->nb_philo]);
-		return (-1);
-	}
-	return (0);
-}*/
-
 int	ft_eat(t_philo *philo)
 {
 	while (42)
@@ -107,16 +88,13 @@ int	ft_eat(t_philo *philo)
 			continue;
 		pthread_mutex_lock(&philo->vargs->l_fork[philo->id - 1]);
 		ft_try_print("has taken a fork", philo, philo->vargs->start, philo->id);
-		pthread_mutex_lock(&philo->vargs->l_fork[philo->id
+		pthread_mutex_lock(&philo->vargs->l_fork[philo->id 
 			% (philo->vargs->nb_philo)]);
 		ft_try_print("has taken a fork", philo, philo->vargs->start, philo->id);
 		ft_try_print("is eating", philo, philo->vargs->start, philo->id);
 		ft_usleep(philo->vargs->time_eat);
 		philo->meals_eat++;
-		printf("%d  %ld\n", philo->id, actual_time() - philo->last_eat);
 		philo->last_eat = actual_time();
-		printf("%d  %ld\n", philo->id, actual_time() - philo->last_eat);
-		ft_try_print("finish eating", philo, philo->vargs->start, philo->id);
 		pthread_mutex_unlock(&philo->vargs->l_fork[philo->id - 1]);
 		pthread_mutex_unlock(&philo->vargs->l_fork[philo->id
 			% philo->vargs->nb_philo]);
@@ -132,10 +110,9 @@ void *routine(void *data)
 	t_philo *philo;
 
 	philo = (t_philo *)data;
-	philo->meals_eat = 0;
 	if (philo->id % 2 == 0)
 		usleep(philo->vargs->time_eat * 100);
-	printf("%ld philo %d vient de se reveiller\n", actual_time() - philo->vargs->start,  philo->id);
+	//printf("%ld philo %d vient de se reveiller\n", actual_time() - philo->vargs->start,  philo->id);
 	while (42 && philo->meals_eat != philo->vargs->nb_meal)
 	{	
 		//printf("debut routine %d\n", philo->id);
@@ -152,10 +129,6 @@ void *routine(void *data)
 	return (0);
 }
 
-
-
-
-
 void	createThreads(t_val *threadData)
 {
 	int i;
@@ -165,6 +138,7 @@ void	createThreads(t_val *threadData)
 	while (i < threadData->nb_philo)
 	{
 		threadData->l_philo[i].id = i + 1;
+		threadData->l_philo[i].meals_eat = 0;
 		threadData->l_philo[i].last_eat = actual_time();
 		threadData->l_philo[i].vargs = threadData;
 		result = pthread_create(&threadData->l_philo[i].thread_id, NULL, routine, &threadData->l_philo[i]);
@@ -226,15 +200,12 @@ int	main(int argc, char **argv)
 	ft_death(&val);
 	joinThreads(&val);
 	i = 0;
-	/*while (i < val.nb_philo)
-	{
-		if (pthread_mutex_destroy(&val.l_fork[i]) != 0) {
-            perror("Erreur lors de la destruction du mutex");
-            // Gérer l'erreur ici, si nécessaire
-        } else {
+	while (i < val.nb_philo)
+		if (pthread_mutex_destroy(&val.l_fork[i]) != 0) 
+			return(-1);
+    	else
             i++;
-        }
-	}*/
-
+	free(val.l_fork);
+	free(val.l_philo);
 	return (0);
 }
