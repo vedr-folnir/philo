@@ -3,6 +3,8 @@ CC = cc
 FLAGS = -pthread -g -Wall -Wextra -Werror 
 SRCS =	philosophers.c \
 		errors.c \
+		threads.c \
+		utils.c \
 
 OBJ := $(SRCS:.c=.o)
 

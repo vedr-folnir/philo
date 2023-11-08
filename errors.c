@@ -6,7 +6,7 @@
 /*   By: hlasota <hlasota@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 10:22:30 by hlasota           #+#    #+#             */
-/*   Updated: 2023/10/19 17:10:54 by hlasota          ###   ########.fr       */
+/*   Updated: 2023/11/08 12:39:41 by hlasota          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -60,7 +60,6 @@ int	digit(int argc, char *argv[])
 	return (1);
 }
 
-
 int	parse_args(int argc, char **argv, t_val *p)
 {
 	if ((argc == 5 || argc == 6) && digit(argc, argv))
@@ -78,6 +77,32 @@ int	parse_args(int argc, char **argv, t_val *p)
 			return (0);
 		p->start = actual_time();
 		return (1);
+	}
+	return (0);
+}
+
+int	error(t_val *val)
+{
+	int	i;
+
+	val->l_philo = malloc(sizeof(t_philo) * val->nb_philo + 1);
+	if (!val->l_philo)
+	{
+		printf("error malloc\n");
+		return (-2);
+	}
+	val->l_fork = malloc(sizeof(pthread_mutex_t) * val->nb_philo + 1);
+	if (!val->l_fork)
+	{
+		printf("error malloc\n");
+		return (-2);
+	}
+	i = 0;
+	while (i < val->nb_philo)
+	{
+		if (pthread_mutex_init(&val->l_fork[i], NULL) != 0)
+			return (-3);
+		i++;
 	}
 	return (0);
 }

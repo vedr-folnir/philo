@@ -6,7 +6,7 @@
 /*   By: hlasota <hlasota@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 14:29:51 by hlasota           #+#    #+#             */
-/*   Updated: 2023/10/19 16:20:45 by hlasota          ###   ########.fr       */
+/*   Updated: 2023/11/08 12:45:13 by hlasota          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include <pthread.h>
 # include <sys/time.h>
 # include <unistd.h>
-
 
 typedef struct s_val {
 	int				nb_philo;
@@ -42,13 +41,19 @@ typedef struct s_philo
 	t_val		*vargs;
 }							t_philo;
 
-int		ft_atoi(const char *str);
-int		digit(int argc, char *argv[]);
-int		check_input(int argc, char *argv[], t_val *val);
-void	print_instruction(void);
-void	*philosophers(void *arg);
-int		parse_args(int argc, char **argv, t_val *p);
-void	*routine(void *data);
+int			ft_atoi(const char *str);
+int			digit(int argc, char *argv[]);
+int			check_input(int argc, char *argv[], t_val *val);
+void		print_instruction(void);
+void		*philosophers(void *arg);
+int			parse_args(int argc, char **argv, t_val *p);
+void		*routine(void *data);
 long int	actual_time(void);
+void		create_threads(t_val *threadData);
+void		join_threads(t_val *threadData);
+void		ft_death(t_val *val);
+void		ft_usleep(long int time_in_ms);
+void		ft_try_print(char *text, t_philo *philo, long int time, int id);
+int			error(t_val *val);
 
 #endif
