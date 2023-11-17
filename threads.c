@@ -6,7 +6,7 @@
 /*   By: hlasota <hlasota@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 12:37:52 by hlasota           #+#    #+#             */
-/*   Updated: 2023/11/08 12:38:53 by hlasota          ###   ########.fr       */
+/*   Updated: 2023/11/17 16:38:41 by hlasota          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -66,14 +66,21 @@ void	ft_death(t_val *val)
 	i = 0;
 	while (42)
 	{
-		if (actual_time() - val->l_philo[i].last_eat >= val->time_die)
+		if (actual_time() - get_last_eat(&val->l_philo[i]) >= val->time_die)
 		{
+			pthread_mutex_lock(&val->change_val[0]);
 			val->death = -1;
+			pthread_mutex_unlock(&val->change_val[0]);
 			printf("%ld %d has died\n", actual_time() - val->start, i + 1);
 			return ;
 		}
-		if (val->l_philo[i].meals_eat == val->nb_meal)
+		pthread_mutex_lock(&val->change_val[7]);
+		if (get_meals(&val->l_philo[i]) == val->nb_meal)
+		{
+			pthread_mutex_unlock(&val->change_val[7]);
 			return ;
+		}
+		pthread_mutex_unlock(&val->change_val[7]);
 		i = (i + 1) % val->nb_philo;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: hlasota <hlasota@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 14:29:51 by hlasota           #+#    #+#             */
-/*   Updated: 2023/11/08 12:45:13 by hlasota          ###   ########.fr       */
+/*   Updated: 2023/11/17 16:39:23 by hlasota          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct s_val {
 	pthread_mutex_t	*l_fork;
 	int				death;
 	struct s_philo	*l_philo;
-
+	pthread_mutex_t	change_val[8];
 }				t_val;
 
 typedef struct s_philo
@@ -55,5 +55,8 @@ void		ft_death(t_val *val);
 void		ft_usleep(long int time_in_ms);
 void		ft_try_print(char *text, t_philo *philo, long int time, int id);
 int			error(t_val *val);
+int			get_death(t_val *val);
+long int	get_last_eat(t_philo *philo);
+int			get_meals(t_philo *philo);
 
 #endif

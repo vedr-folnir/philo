@@ -6,7 +6,7 @@
 /*   By: hlasota <hlasota@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 12:40:51 by hlasota           #+#    #+#             */
-/*   Updated: 2023/11/08 12:41:35 by hlasota          ###   ########.fr       */
+/*   Updated: 2023/11/17 16:34:54 by hlasota          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -33,7 +33,7 @@ void	ft_usleep(long int time_in_ms)
 
 void	ft_try_print(char *text, t_philo *philo, long int time, int id)
 {
-	if (philo->vargs->death != -1)
+	if (get_death(philo->vargs) != -1)
 	{
 		printf("%ld %d %s\n", actual_time() - time, id, text);
 	}

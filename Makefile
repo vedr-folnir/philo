@@ -1,10 +1,11 @@
 NAME = philo
 CC = cc
-FLAGS = -pthread -g -Wall -Wextra -Werror 
+FLAGS = -pthread -g -Wall -Wextra -Werror -g
 SRCS =	philosophers.c \
 		errors.c \
 		threads.c \
 		utils.c \
+		get_data.c \
 
 OBJ := $(SRCS:.c=.o)
 

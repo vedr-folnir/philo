@@ -6,7 +6,7 @@
 /*   By: hlasota <hlasota@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 10:22:30 by hlasota           #+#    #+#             */
-/*   Updated: 2023/11/08 12:39:41 by hlasota          ###   ########.fr       */
+/*   Updated: 2023/11/17 16:24:33 by hlasota          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -81,6 +81,17 @@ int	parse_args(int argc, char **argv, t_val *p)
 	return (0);
 }
 
+int	init_data_race_mutex(t_val *val)
+{
+	int	i;
+
+	i = 0;
+	while (i < 8)
+		if (pthread_mutex_init(&val->change_val[i++], NULL) != 0)
+			return (-3);
+	return (0);
+}
+
 int	error(t_val *val)
 {
 	int	i;
@@ -104,5 +115,5 @@ int	error(t_val *val)
 			return (-3);
 		i++;
 	}
-	return (0);
+	return (init_data_race_mutex(val));
 }
