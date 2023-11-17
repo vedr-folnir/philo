@@ -6,7 +6,7 @@
 /*   By: hlasota <hlasota@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 10:23:09 by hlasota           #+#    #+#             */
-/*   Updated: 2023/11/17 16:41:51 by hlasota          ###   ########.fr       */
+/*   Updated: 2023/11/17 17:14:54 by hlasota          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -103,5 +103,7 @@ int	main(int argc, char **argv)
 	create_threads(&val);
 	ft_death(&val);
 	join_threads(&val);
+	if (get_meals(&val.l_philo[0]) == val.nb_meal)
+		printf("every philosophers have eaten %d time(s)\n", val.nb_meal);
 	return (leak_destroyer(val));
 }

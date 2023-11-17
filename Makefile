@@ -1,6 +1,6 @@
 NAME = philo
 CC = cc
-FLAGS = -pthread -g -Wall -Wextra -Werror -g
+FLAGS = -pthread -Wall -Wextra -Werror -g3
 SRCS =	philosophers.c \
 		errors.c \
 		threads.c \
